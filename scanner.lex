@@ -8,10 +8,10 @@
 %option yylineno
 %option noyywrap
 
-relop       ==|!=|<|>|<=|>=
+
 plus_minus  \+|\-
 mul_div \*|\\
-comment     //[^\r\n]*[ \r|\n|\r\n]?
+comment     \/\/[^\r\n]*[ \r|\n|\r\n]?
 whitespace [\t\n\r ]
 tab [\t]
 
@@ -43,7 +43,7 @@ continue return CONTINUE;
 \} return RBRACE;
 = return ASSIGN;
 ==|!= return EQUALITY;
-<|>|<=|>= return RELATION;
+\<=|\>=|\<|\> return RELATION;
 {plus_minus} return PLUS_MINUS;
 {mul_div} return MUL_DIV;
 [a-zA-Z][a-zA-Z0-9]* return ID;

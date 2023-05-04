@@ -2,10 +2,9 @@
     #include <iostream>
     #include "output.hpp"
     using namespace std;
-
-    #define YYSTYPE Node*
-    int yylex();*
-    void yyerror();
+    int yylex();
+    extern int yylineno;
+    void yyerror(const char*);
 %}
 
 %nonassoc VOID
@@ -18,7 +17,7 @@
 %nonassoc FALSE
 %nonassoc RETURN
 %nonassoc IF
-%nonassoc ELSE
+
 %nonassoc WHILE
 %nonassoc BREAK
 %nonassoc CONTINUE
@@ -41,86 +40,87 @@
 %left LBRACE
 %left RBRACE
 
+%nonassoc ELSE
 
 %%
-Program: Funcs;     {printProductionRule(1);}
+Program: Funcs     {output::printProductionRule(1);}
 
-Funcs: epsilon;     {printProductionRule(2);}
-     | FuncDecl Funcs   {printProductionRule(3);}
+Funcs: /*epsilon*/     {output::printProductionRule(2);}
+     | FuncDecl Funcs   {output::printProductionRule(3);}
      ;
 
-FuncDecl: OverRide RetType ID LPAREN Formals RPAREN LBRACE Statements RBRACE;   {printProductionRule(4);}
+FuncDecl: OverRide RetType ID LPAREN Formals RPAREN LBRACE Statements RBRACE   {output::printProductionRule(4);}
 
-OverRide: epsilon   {printProductionRule(5);}
-        | OVERRIDE  {printProductionRule(6);}
+OverRide: /*epsilon*/   {output::printProductionRule(5);}
+        | OVERRIDE  {output::printProductionRule(6);}
         ;
 
-RetType: Type   {printProductionRule(7);}
-       | VOID   {printProductionRule(8);}
+RetType: Type   {output::printProductionRule(7);}
+       | VOID   {output::printProductionRule(8);}
        ;
 
-Formals: epsilon    {printProductionRule(9);}
-       | FormalsList    {printProductionRule(10);}
+Formals: /*epsilon*/    {output::printProductionRule(9);}
+       | FormalsList    {output::printProductionRule(10);}
        ;
 
-FormalsList: FormalDecl     {printProductionRule(11);}
-           | FormalDecl COMMA FormalsList   {printProductionRule(12);}
+FormalsList: FormalDecl     {output::printProductionRule(11);}
+           | FormalDecl COMMA FormalsList   {output::printProductionRule(12);}
            ;
 
-FormalDecl: Type ID;    {printProductionRule(13);}
+FormalDecl: Type ID    {output::printProductionRule(13);}
 
-Statements: Statement;  {printProductionRule(14);}
-          | Statements Statement    {printProductionRule(15);}
+Statements: Statement  {output::printProductionRule(14);}
+          | Statements Statement    {output::printProductionRule(15);}
           ;
           
-Statement: LBRACE Statements RBRACE;    {printProductionRule(16);}
-          | Type ID SC                  {printProductionRule(17);}
-          | Type ID ASSIGN Exp SC       {printProductionRule(18);}
-          | ID ASSIGN Exp SC            {printProductionRule(19);}
-          | Call SC                     {printProductionRule(20);}
-          | RETURN SC                   {printProductionRule(21);}
-          | RETURN Exp SC               {printProductionRule(22);}
-          | IF LPAREN Exp RPAREN Statement  {printProductionRule(23);}
-          | IF LPAREN Exp RPAREN Statement ELSE Statement       {printProductionRule(24);}
-          | WHILE LPAREN Exp RPAREN Statement       {printProductionRule(25);}
-          | BREAK SC                    {printProductionRule(26);}
-          | CONTINUE SC                 {printProductionRule(27);}
+Statement: LBRACE Statements RBRACE    {output::printProductionRule(16);}
+          | Type ID SC                  {output::printProductionRule(17);}
+          | Type ID ASSIGN Exp SC       {output::printProductionRule(18);}
+          | ID ASSIGN Exp SC            {output::printProductionRule(19);}
+          | Call SC                     {output::printProductionRule(20);}
+          | RETURN SC                   {output::printProductionRule(21);}
+          | RETURN Exp SC               {output::printProductionRule(22);}
+          | IF LPAREN Exp RPAREN Statement  {output::printProductionRule(23);}
+          | IF LPAREN Exp RPAREN Statement ELSE Statement       {output::printProductionRule(24);}
+          | WHILE LPAREN Exp RPAREN Statement       {output::printProductionRule(25);}
+          | BREAK SC                    {output::printProductionRule(26);}
+          | CONTINUE SC                 {output::printProductionRule(27);}
           ;
           
-Call: ID LPAREN ExpList RPAREN      {printProductionRule(28);}
-    | ID LPAREN RPAREN          {printProductionRule(29);}
+Call: ID LPAREN ExpList RPAREN      {output::printProductionRule(28);}
+    | ID LPAREN RPAREN          {output::printProductionRule(29);}
     ;
     
-ExpList: Exp;       {printProductionRule(30);}
-       | Exp COMMA ExpList      {printProductionRule(31);}
+ExpList: Exp       {output::printProductionRule(30);}
+       | Exp COMMA ExpList      {output::printProductionRule(31);}
        ;
        
-Type: INT       {printProductionRule(32);}
-    | BYTE      {printProductionRule(33);}
-    | BOOL      {printProductionRule(34);}
+Type: INT       {output::printProductionRule(32);}
+    | BYTE      {output::printProductionRule(33);}
+    | BOOL      {output::printProductionRule(34);}
     ;
     
-Exp: LPAREN Exp RPAREN  {printProductionRule(35);}
-    | Exp PLUS_MINUS Exp    {printProductionRule(36);}
-    | Exp MUL_DIV Exp       {printProductionRule(36);}
-    | ID                    {printProductionRule(37);}
-    | Call              {printProductionRule(38);}
-    | NUM               {printProductionRule(39);}
-    | NUM B                {printProductionRule(40);}
-    | STRING            {printProductionRule(41);}
-    | TRUE              {printProductionRule(42);}
-    | FALSE             {printProductionRule(43);}
-    | NOT Exp           {printProductionRule(44);}
-    | Exp AND Exp       {printProductionRule(45);}
-    | Exp OR Exp        {printProductionRule(46);}
-    | Exp EQUALITY Exp   {printProductionRule(47);}
-    | Exp RELATION Exp       {printProductionRule(47);}
-    | LPAREN Type RPAREN Exp    {printProductionRule(48);}
+Exp: LPAREN Exp RPAREN  {output::printProductionRule(35);}
+    | Exp PLUS_MINUS Exp    {output::printProductionRule(36);}
+    | Exp MUL_DIV Exp       {output::printProductionRule(36);}
+    | ID                    {output::printProductionRule(37);}
+    | Call              {output::printProductionRule(38);}
+    | NUM               {output::printProductionRule(39);}
+    | NUM B                {output::printProductionRule(40);}
+    | STRING            {output::printProductionRule(41);}
+    | TRUE              {output::printProductionRule(42);}
+    | FALSE             {output::printProductionRule(43);}
+    | NOT Exp           {output::printProductionRule(44);}
+    | Exp AND Exp       {output::printProductionRule(45);}
+    | Exp OR Exp        {output::printProductionRule(46);}
+    | Exp EQUALITY Exp   {output::printProductionRule(47);}
+    | Exp RELATION Exp       {output::printProductionRule(47);}
+    | LPAREN Type RPAREN Exp    {output::printProductionRule(48);}
     ;
 
 %%
 
-void yyerror() {
+void yyerror(const char*) {
     output::errorSyn(yylineno);
     exit(0);
 }
