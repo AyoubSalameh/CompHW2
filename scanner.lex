@@ -1,26 +1,21 @@
 %{
 /* Declaration section*/
 #include <stdio.h>
-#include "tokens.hpp"
+#include "output.hpp"
+#include "parser.tab.hpp"
 %}
 
 %option yylineno
 %option noyywrap
 
-relop       ==|!=|[<>]|<=|>=
-binop       [\+\-\*\/]
-comment     \/\/[^\r\n]*
+relop       ==|!=|<|>|<=|>=
+plus_minus  \+|\-
+mul_div \*|\\
+comment     //[^\r\n]*[ \r|\n|\r\n]?
 whitespace [\t\n\r ]
 tab [\t]
-digit ([0-9])
-positivedigit ([1-9])
-letter ([a-zA-Z])
-printable [ !#-\[\]-~]
-escape \\[\\"nrt0]
-hex \\x[0-7][0-9A-Fa-f]
-string ({printable}|{tab}|{escape}|{hex})*
-illegalescape \\[^\\"nrt0]
-illegalhex \\x([0-9A-Za-z]){1,2}
+
+
 
 %%
 void return VOID;
@@ -47,17 +42,17 @@ continue return CONTINUE;
 \{ return LBRACE;
 \} return RBRACE;
 = return ASSIGN;
-{relop} return RELOP;
-{binop} return BINOP;
-{comment} return COMMENT;
-{letter}({letter}|{digit})* return ID;
-(0|({positivedigit}{digit}*)) return NUM;
-\"{string}\" return STRING;
-\"{string}({illegalhex}|{illegalescape}) return ILLEGAL_ESCAPE;
-\"{string} return OPEN_STRING;
-\"{string}[\n] return OPEN_STRING;
+==|!= return EQUALITY;
+<|>|<=|>= return RELATION;
+{plus_minus} return PLUS_MINUS;
+{mul_div} return MUL_DIV;
+[a-zA-Z][a-zA-Z0-9]* return ID;
+0|[1-9][0-9]* return NUM;
+\"([^\n\r\"\\]|\\[rnt"\\])+\" return STRING;
 {whitespace} ;
-. return GENERAL_ERROR;
+{comment} ;
+.   {output::errorLex(yylineno);
+    exit(0);}
 %%
 
 
