@@ -10,7 +10,7 @@
 
 
 plus_minus  \+|\-
-mul_div \*|\\
+mul_div \*|\/
 comment     \/\/[^\r\n]*[ \r|\n|\r\n]?
 whitespace [\t\n\r ]
 tab [\t]
@@ -51,7 +51,7 @@ continue return CONTINUE;
 \"([^\n\r\"\\]|\\[rnt"\\])+\" return STRING;
 {whitespace} ;
 {comment} ;
-.   {output::errorLex(yylineno);
+.   { output::errorLex(yylineno);
     exit(0);}
 %%
 

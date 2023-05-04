@@ -31,11 +31,15 @@
 %right ASSIGN
 %left OR
 %left AND
-%right NOT
+
 %left EQUALITY
 %left RELATION
+
 %left PLUS_MINUS
 %left MUL_DIV
+
+%right NOT
+
 %left LPAREN
 %left RPAREN
 %left LBRACE
