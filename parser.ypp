@@ -12,7 +12,7 @@
 %nonassoc BYTE
 %nonassoc BOOL
 %nonassoc OVERRIDE
-%nonassoc NOT
+%right NOT
 %nonassoc TRUE
 %nonassoc FALSE
 %nonassoc RETURN
