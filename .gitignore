@@ -30,3 +30,13 @@
 *.exe
 *.out
 *.app
+
+*.in
+*.out
+*.res
+
+compi_hw2_tests_improved/
+expected/
+in/
+tester.py
+
